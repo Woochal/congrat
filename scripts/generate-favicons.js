@@ -1,5 +1,5 @@
 /**
- * 이 스크립트는 SVG 파일을 다양한 크기의 PNG 및 ICO 파일로 변환하는 예시입니다.
+ * 이 스크립트는 SVG 파일을 다양한 크기의 PNG 및 JPG 파일로 변환합니다.
  * 실제로 실행하려면 sharp 패키지가 필요합니다.
  * 
  * 설치 방법:
@@ -9,9 +9,14 @@
  * node scripts/generate-favicons.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import sharp from 'sharp';
+
+// __dirname 구현 (ES 모듈에서는 기본적으로 제공되지 않음)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 경로 설정
 const PUBLIC_DIR = path.join(__dirname, '../public');
