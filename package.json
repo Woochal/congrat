@@ -5,11 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-favicons.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "generate-favicons": "node scripts/generate-favicons.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",
@@ -28,7 +26,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
-    "sharp": "^0.33.2",
     "vite": "^6.3.5"
   }
 }
