@@ -1,19 +1,17 @@
 /**
  * 이 스크립트는 SVG 파일을 다양한 크기의 PNG 및 ICO 파일로 변환하는 예시입니다.
- * 실제로 실행하려면 sharp, ico-converter 등의 패키지가 필요합니다.
+ * 실제로 실행하려면 sharp 패키지가 필요합니다.
  * 
  * 설치 방법:
- * npm install sharp ico-converter --save-dev
+ * npm install sharp --save-dev
  * 
  * 실행 방법:
  * node scripts/generate-favicons.js
  */
 
-/*
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
-const icoConverter = require('ico-converter');
 
 // 경로 설정
 const PUBLIC_DIR = path.join(__dirname, '../public');
@@ -24,7 +22,7 @@ if (!fs.existsSync(IMG_DIR)) {
   fs.mkdirSync(IMG_DIR, { recursive: true });
 }
 
-// SVG 파일을 PNG로 변환 후 ICO로 변환
+// SVG 파일을 PNG로 변환
 async function generateFavicons() {
   try {
     // SVG를 다양한 크기의 PNG로 변환
@@ -54,47 +52,57 @@ async function generateFavicons() {
     
     console.log('Generated favicon-16x16.png');
     
-    // ICO 파일 생성 (여러 크기 포함)
-    await icoConverter.fromPng(
-      path.join(IMG_DIR, 'favicon-32x32.png'),
-      path.join(PUBLIC_DIR, 'favicon.ico'),
-      { sizes: [16, 24, 32, 64] }
-    );
+    // 참고: ICO 파일은 PNG 파일로 대체합니다. 실제 ICO 파일은 필요한 경우 온라인 변환 도구를 사용하세요.
+    await sharp(svgBuffer)
+      .resize(32, 32)
+      .png()
+      .toFile(path.join(PUBLIC_DIR, 'favicon.png'));
     
-    console.log('Generated favicon.ico');
+    console.log('Generated favicon.png (for favicon.ico replacement)');
     
     // 오픈 그래프 이미지
     const ogSvgBuffer = fs.readFileSync(path.join(PUBLIC_DIR, 'og-image.svg'));
     
+    // JPG 버전 생성 (소셜 미디어에서 더 높은 호환성)
     await sharp(ogSvgBuffer)
       .resize(1200, 630)
-      .png()
-      .toFile(path.join(IMG_DIR, 'og-image.png'));
+      .jpeg({ quality: 90 })
+      .toFile(path.join(IMG_DIR, 'og-image.jpg'));
     
-    console.log('Generated og-image.png');
+    console.log('Generated og-image.jpg');
     
     // HTML 파일 업데이트
-    // OG 이미지를 SVG에서 PNG로 변경
+    // OG 이미지를 SVG에서 JPG로 변경
     let htmlContent = fs.readFileSync(path.join(PUBLIC_DIR, '../index.html'), 'utf8');
+    
+    // 현재 도메인 확인 (개발 환경에서는 기본값 사용)
+    const domain = process.env.SITE_URL || 'https://congrat-site.vercel.app';
+    
+    // 오픈 그래프 이미지 URL 업데이트
     htmlContent = htmlContent.replace(
-      '<meta property="og:image" content="/og-image.svg" />',
-      '<meta property="og:image" content="/img/og-image.png" />'
+      /<meta property="og:image" content="[^"]*"/g,
+      `<meta property="og:image" content="${domain}/img/og-image.jpg"`
     );
+    
+    // 트위터 이미지 URL 업데이트
     htmlContent = htmlContent.replace(
-      '<meta name="twitter:image" content="/og-image.svg" />',
-      '<meta name="twitter:image" content="/img/og-image.png" />'
+      /<meta name="twitter:image" content="[^"]*"/g,
+      `<meta name="twitter:image" content="${domain}/img/og-image.jpg"`
+    );
+    
+    // favicon 업데이트
+    htmlContent = htmlContent.replace(
+      /<link rel="shortcut icon" href="[^"]*"/g,
+      `<link rel="shortcut icon" href="/favicon.png"`
     );
     
     fs.writeFileSync(path.join(PUBLIC_DIR, '../index.html'), htmlContent);
     
-    console.log('Updated HTML file with PNG references');
+    console.log('Updated HTML file with JPG image references');
     console.log('All favicons generated successfully!');
   } catch (error) {
     console.error('Error generating favicons:', error);
   }
 }
 
-generateFavicons();
-*/
-
-console.log('이 스크립트는 예시 코드입니다. 실행하려면 주석을 제거하고 필요한 패키지를 설치하세요.'); 
+generateFavicons(); 
