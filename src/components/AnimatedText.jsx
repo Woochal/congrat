@@ -77,7 +77,7 @@ const AnimatedText = ({ onComplete }) => {
     { text: "승.진.이라뇨?!?", charByChar: true, scale: 1, fontSize: 8, displayTime: 600 },
     { text: "이 정도면", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 400 },
     { text: "드라마 주인공급", charByChar: true, scale: 1, fontSize: 8, displayTime: 500 },
-    { text: "인 생 전 개", charByChar: true, scale: 1, fontSize: 13, displayTime: 800 },
+    { text: "인 생 전 개", charByChar: true, scale: 1, fontSize: 12, displayTime: 800 },
     { text: "아닙니까~!!!🎬", charByChar: false, scale: 1, fontSize: 6, displayTime: 500 },
     { text: "일 잘해, 성격 좋아,\n외모까지 미쳤는데…", charByChar: true, scale: 1, fontSize: 6, displayTime: 850 },
     { text: "이제 승진까지!?", charByChar: false, scale: 1, fontSize: 9, displayTime: 600 },
