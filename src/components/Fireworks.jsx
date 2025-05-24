@@ -22,7 +22,7 @@ const Fireworks = ({ duration = 4000, onComplete }) => {
   useEffect(() => {
     // 폭죽 효과음 재생
     playBoom();
-    setTimeout(() => playCheer(), 800);
+    setTimeout(() => playCheer(), 300);
     
     // Canvas 설정
     const canvas = canvasRef.current;
@@ -49,24 +49,22 @@ const Fireworks = ({ duration = 4000, onComplete }) => {
       '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'
     ];
     
-    // 여러 개의 폭죽 애니메이션 동시 실행
+    // 여러 개의 폭죽 애니메이션 동시 실행 - 압축된 타이밍
     const launchFireworks = () => {
-      // 첫 번째 큰 폭죽
-      setTimeout(() => {
-        myConfetti({
-          particleCount: 200,
-          spread: 120,
-          origin: { x: 0.5, y: 0.6 },
-          colors: colors,
-          startVelocity: 45,
-          gravity: 0.8,
-          scalar: 1.2,
-          ticks: 100
-        });
-        playBoom();
-      }, 300);
+      // 첫 번째 큰 폭죽 - 즉시 시작
+      myConfetti({
+        particleCount: 200,
+        spread: 120,
+        origin: { x: 0.5, y: 0.6 },
+        colors: colors,
+        startVelocity: 45,
+        gravity: 0.8,
+        scalar: 1.2,
+        ticks: 60 // 지속 시간 단축
+      });
+      playBoom();
       
-      // 여러 위치에서 동시에 발사
+      // 여러 위치에서 동시에 발사 - 더 빠르게
       setTimeout(() => {
         origins.forEach((origin, i) => {
           setTimeout(() => {
@@ -80,14 +78,14 @@ const Fireworks = ({ duration = 4000, onComplete }) => {
               gravity: 0.8,
               scalar: randomInRange(0.8, 1.2),
               drift: randomInRange(-0.2, 0.2),
-              ticks: 80
+              ticks: 50 // 지속 시간 단축
             });
             if (i % 2 === 0) playBoom();
-          }, i * 300);
+          }, i * 100); // 간격 단축 (300 -> 100)
         });
-      }, 800);
+      }, 200); // 간격 단축 (800 -> 200)
       
-      // 스타버스트 효과
+      // 스타버스트 효과 - 더 빠르게
       setTimeout(() => {
         myConfetti({
           particleCount: 300,
@@ -98,12 +96,12 @@ const Fireworks = ({ duration = 4000, onComplete }) => {
           colors: colors,
           shapes: ['circle', 'square'],
           scalar: 1.5,
-          ticks: 120
+          ticks: 60 // 지속 시간 단축
         });
         playBoom();
-      }, 1500);
+      }, 500); // 간격 단축 (1500 -> 500)
       
-      // 글리터 효과
+      // 글리터 효과 - 더 빠르게, 짧게
       setTimeout(() => {
         const interval = setInterval(() => {
           myConfetti({
@@ -118,15 +116,15 @@ const Fireworks = ({ duration = 4000, onComplete }) => {
             colors: [colors[Math.floor(Math.random() * colors.length)]],
             shapes: ['star'],
             scalar: 0.8,
-            ticks: 50,
+            ticks: 30, // 지속 시간 단축
             gravity: 0.7
           });
-        }, 150);
+        }, 100); // 간격 단축 (150 -> 100)
         
         setTimeout(() => {
           clearInterval(interval);
-        }, 1500);
-      }, 2000);
+        }, 600); // 간격 단축 (1500 -> 600)
+      }, 800); // 간격 단축 (2000 -> 800)
     };
     
     // 폭죽 애니메이션 시작

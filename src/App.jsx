@@ -9,15 +9,15 @@ import {
   Form,
   Input,
   Button,
-  Hint,
   AnimationContainer,
-  FailAnimationText
+  ErrorMessage
 } from './styles/AppStyles'
 import AnimatedText from './components/AnimatedText'
 import Fireworks from './components/Fireworks'
 import EmojiRain from './components/EmojiRain'
 import DarkOverlay from './components/DarkOverlay'
 import useSounds from './hooks/useSounds'
+import BackgroundMusic from './components/BackgroundMusic'
 
 function App() {
   const [name, setName] = useState('')
@@ -27,6 +27,8 @@ function App() {
   const [showEmojiRain, setShowEmojiRain] = useState(false)
   const [showDarkOverlay, setShowDarkOverlay] = useState(false)
   const [showAnimatedText, setShowAnimatedText] = useState(false)
+  const [playBackgroundMusic, setPlayBackgroundMusic] = useState(false)
+  const [inputError, setInputError] = useState(false)
   const inputRef = useRef(null)
   const correctName = '송지원' 
   const messageLines = [
@@ -49,21 +51,20 @@ function App() {
     `축하드려요!!!`
   ];
   
-  const textRef = useRef(null)
   const containerRef = useRef(null)
   const { playTada } = useSounds()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (name.trim()) {
-      setShowInput(false)
-      
       if (name === correctName) {
+        setShowInput(false)
         setAnimationState('success')
+        setInputError(false)
         runSuccessAnimation()
       } else {
-        setAnimationState('fail')
-        runFailAnimation()
+        setInputError(true)
+        inputRef.current.focus()
       }
     }
   }
@@ -73,57 +74,24 @@ function App() {
     // 1. 배경 어둡게
     setShowDarkOverlay(true)
     
-    // 2. 0.5초 후 폭죽 시작
+    // 2. 0.2초 후 폭죽 시작
     setTimeout(() => {
       setShowFireworks(true)
       playTada() // 성공 사운드 재생
-    }, 500)
+    }, 200)
     
-    // 3. 1초 후 이모지 비 시작
+    // 3. 0.4초 후 이모지 비 시작
     setTimeout(() => {
       setShowEmojiRain(true)
-    }, 1000)
+    }, 400)
     
-    // 4. 1.5초 후 애니메이션 텍스트 시작
+    // 4. 2.5초 후 애니메이션 텍스트 시작 (파티클 애니메이션 끝나고 시작)
     setTimeout(() => {
       setShowAnimatedText(true)
-    }, 1500)
+      setPlayBackgroundMusic(true) // 텍스트 애니메이션과 함께 배경음악 시작
+    }, 2500)
     
     // 5. 애니메이션 텍스트가 끝나면 handleAnimatedTextComplete에서 resetAnimations를 호출함
-  }
-
-  // 실패 애니메이션
-  const runFailAnimation = () => {
-    if (!textRef.current) return
-    
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setTimeout(() => {
-          setShowInput(true)
-          setAnimationState(null)
-          setName('')
-        }, 2000)
-      }
-    })
-    
-    // 실패 애니메이션
-    tl.fromTo(textRef.current, 
-      { opacity: 0, x: -100 }, 
-      { opacity: 1, x: 0, duration: 0.5 }
-    )
-    .to(textRef.current, { 
-      x: 10, 
-      duration: 0.1, 
-      repeat: 5, 
-      yoyo: true,
-      ease: "power1.inOut" 
-    })
-    .to(textRef.current, { 
-      opacity: 0,
-      y: 20,
-      duration: 0.5,
-      delay: 0.5
-    })
   }
 
   // 모든 애니메이션 리셋
@@ -132,6 +100,7 @@ function App() {
     setShowFireworks(false)
     setShowEmojiRain(false)
     setShowAnimatedText(false)
+    setPlayBackgroundMusic(false) // 배경음악 중지
     
     setTimeout(() => {
       setShowInput(true)
@@ -142,10 +111,19 @@ function App() {
 
   // 애니메이션 텍스트 완료 핸들러
   const handleAnimatedTextComplete = () => {
-    // 애니메이션 텍스트가 완료되면 0.5초 후 모든 것 리셋
+    // 텍스트 애니메이션 완료 후 이모지 애니메이션 한번 더 실행
+    setShowAnimatedText(false); // 텍스트 애니메이션 숨기기
+    
+    // 약간의 딜레이 후 이모지 애니메이션 재시작
     setTimeout(() => {
-      resetAnimations()
-    }, 500)
+      setShowEmojiRain(true); // 이모지 애니메이션 다시 활성화
+      playTada(); // 효과음 재생
+      
+      // 이모지 애니메이션 지속 시간 후 모든 애니메이션 종료
+      setTimeout(() => {
+        resetAnimations();
+      }, 3500); // 이모지 애니메이션 지속 시간 증가 (3.5초)
+    }, 300);
   }
 
   useEffect(() => {
@@ -153,6 +131,12 @@ function App() {
       inputRef.current.focus()
     }
   }, [showInput])
+
+  useEffect(() => {
+    if (inputError && name === correctName) {
+      setInputError(false)
+    }
+  }, [name, inputError])
 
   return (
     <>
@@ -169,38 +153,45 @@ function App() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="이름을 입력하세요"
+                  error={inputError}
                 />
+                {inputError && <ErrorMessage>이름을 확인하세요</ErrorMessage>}
                 <Button type="submit">확인</Button>
               </Form>
-              <Hint>힌트: 정답은 "{correctName}"</Hint>
             </InputContainer>
           ) : (
             <AnimationContainer>
-              {animationState === 'fail' && (
-                <FailAnimationText ref={textRef}>
-                  <Title>아쉽습니다, {name}...</Title>
-                  <p>다시 시도해보세요!</p>
-                </FailAnimationText>
-              )}
             </AnimationContainer>
           )}
+          
+          {/* 배경 음악 - 라이센스 경고 구간 스킵을 위해 startTime과 endTime 설정 */}
+          <BackgroundMusic 
+            isPlaying={playBackgroundMusic} 
+            volume={0.4} 
+            startTime={13} 
+            skipSegment={{
+              start: 30,  // 라이센스 경고 시작 시간(초)
+              end: 33     // 라이센스 경고 종료 시간(초)
+            }}
+          />
           
           {/* 다크 오버레이 */}
           <DarkOverlay isActive={showDarkOverlay} />
           
-          {/* 폭죽 애니메이션 */}
+          {/* 폭죽 애니메이션 - 2.5초로 시간 조정 */}
           {showFireworks && (
             <Fireworks 
-              duration={8000} 
+              duration={2500} 
               onComplete={() => {}} 
             />
           )}
           
-          {/* 이모지 비 애니메이션 */}
+          {/* 이모지 비 애니메이션 - 지속 시간 조정 */}
           {showEmojiRain && (
             <EmojiRain 
-              duration={10000} 
-              density={40} 
+              duration={3500} 
+              density={40}
+              isFinalAnimation={showAnimatedText === false && animationState === 'success'}
             />
           )}
           

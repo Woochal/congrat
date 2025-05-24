@@ -1,6 +1,30 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'SUIT';
+    font-weight: 400;
+    src: url('/fonts/SUIT-Regular.woff2') format('woff2');
+  }
+  
+  @font-face {
+    font-family: 'SUIT';
+    font-weight: 700;
+    src: url('/fonts/SUIT-Bold.woff2') format('woff2');
+  }
+  
+  @font-face {
+    font-family: 'SUIT';
+    font-weight: 800;
+    src: url('/fonts/SUIT-ExtraBold.woff2') format('woff2');
+  }
+  
+  @font-face {
+    font-family: 'SUIT';
+    font-weight: 900;
+    src: url('/fonts/SUIT-Heavy.woff2') format('woff2');
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -8,27 +32,18 @@ const GlobalStyle = createGlobalStyle`
     -webkit-tap-highlight-color: transparent;
   }
   
-  html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'SUIT', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-    color: #333;
-    height: 100vh;
-    width: 100vw;
-    overflow-x: hidden;
-    touch-action: manipulation;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    background-color: #ffffff;
-  }
-
-  #root {
+  html, body, #root {
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f5f5f5;
+    overflow-x: hidden;
   }
-  
+
   /* 모바일 환경에서 텍스트 선택 방지 */
   .no-select {
     -webkit-touch-callout: none;

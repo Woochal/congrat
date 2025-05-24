@@ -69,29 +69,29 @@ const AnimatedText = ({ onComplete }) => {
   const { playPop, playTada } = useSounds();
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   
-  // 각 라인별로 애니메이션 스타일 정의
+  // 각 라인별로 애니메이션 스타일 정의 - 시간 단축
   const messageLines = [
     { text: "와아아~~!!", charByChar: false, scale: 1.2, fontSize: 9, displayTime: 500 },
     { text: "이게 꿈이야 생시야!!", charByChar: true, scale: 1.0, fontSize: 6, displayTime: 600 },
-    { text: "송지원님!!", charByChar: false, scale: 1.5, fontSize: 12, displayTime: 800 },
+    { text: "송지원님!!", charByChar: false, scale: 1.5, fontSize: 12, displayTime: 700 },
     { text: "승.진.이라뇨?!?", charByChar: true, scale: 1.3, fontSize: 8, displayTime: 600 },
     { text: "이 정도면", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 400 },
     { text: "드라마 주인공급", charByChar: true, scale: 1.2, fontSize: 8, displayTime: 500 },
-    { text: "인 생 전 개", charByChar: true, scale: 1.5, fontSize: 14, displayTime: 900 },
+    { text: "인 생 전 개", charByChar: true, scale: 1.5, fontSize: 14, displayTime: 800 },
     { text: "아닙니까~!!!🎬", charByChar: false, scale: 1.4, fontSize: 6, displayTime: 500 },
-    { text: "일 잘해, 성격 좋아,\n외모까지 미쳤는데…", charByChar: true, scale: 1.1, fontSize: 6, displayTime: 1000 },
+    { text: "일 잘해, 성격 좋아,\n외모까지 미쳤는데…", charByChar: true, scale: 1.1, fontSize: 6, displayTime: 850 },
     { text: "이제 승진까지!?", charByChar: false, scale: 1.3, fontSize: 9, displayTime: 600 },
-    { text: "회사가 사람을 \n볼 줄 아네!", charByChar: true, scale: 1.2, fontSize: 7, displayTime: 700 },
-    { text: "송.지.원 님!", charByChar: true, scale: 1.5, fontSize: 12, displayTime: 900 },
-    { text: "이번 승진은\n우주가 정해둔", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 700 },
-    { text: "운명이었습니다요⭐", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 700 },
-    { text: "이제는", charByChar: true, scale: 1.2, fontSize: 8, displayTime: 300 },
+    { text: "회사가 사람을 \n볼 줄 아네!", charByChar: true, scale: 1.2, fontSize: 7, displayTime: 650 },
+    { text: "송.지.원 님!", charByChar: true, scale: 1.5, fontSize: 12, displayTime: 800 },
+    { text: "이번 승진은\n우주가 정해둔", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 650 },
+    { text: "운명이었습니다요⭐", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 650 },
+    { text: "이제는", charByChar: true, scale: 1.2, fontSize: 8, displayTime: 400 },
     { text: "송팀장?", charByChar: true, scale: 1.4, fontSize: 10, displayTime: 500 },
     { text: "송실장?", charByChar: true, scale: 1.6, fontSize: 11, displayTime: 500 },
-    { text: "아니면 그냥", charByChar: true, scale: 1.2, fontSize: 6, displayTime: 400 },
-    { text: " 송CEO!?", charByChar: true, scale: 1.8, fontSize: 14, displayTime: 1000 },
-    { text: "모두 박수!!!!!!!", charByChar: true, scale: 1.4, fontSize: 9, displayTime: 700 },
-    { text: "승진 축하드려요!!!", charByChar: true, scale: 1.4, fontSize: 9, displayTime: 1000 }
+    { text: "아니면 그냥", charByChar: true, scale: 1.2, fontSize: 6, displayTime: 450 },
+    { text: " 송CEO!?", charByChar: true, scale: 1.8, fontSize: 14, displayTime: 850 },
+    { text: "모두 박수!!!!!!!", charByChar: true, scale: 1.4, fontSize: 9, displayTime: 650 },
+    { text: "승진 축하드려요!!!", charByChar: true, scale: 1.4, fontSize: 9, displayTime: 850 }
   ];
   
   // 한 라인씩 애니메이션 실행
@@ -99,10 +99,10 @@ const AnimatedText = ({ onComplete }) => {
     if (index >= messageLines.length) {
       // 모든 라인 애니메이션 완료
       if (onComplete) {
-        // 마지막 애니메이션이 끝난 후 1초 후에 콜백 실행
+        // 마지막 애니메이션이 끝난 후 즉시 콜백 실행
         setTimeout(() => {
           onComplete();
-        }, 1000);
+        }, 500);
       }
       return;
     }
@@ -113,11 +113,11 @@ const AnimatedText = ({ onComplete }) => {
     
     if (!lineContainer) return;
     
-    // 라인 컨테이너 표시
+    // 라인 컨테이너 표시 - 더 빠르게
     gsap.to(lineContainer, {
       opacity: 1,
       y: 0,
-      duration: 0.3, // 더 빠르게
+      duration: 0.2, // 더 빠르게
       ease: "power2.out",
       onStart: () => {
         playPop();
@@ -128,12 +128,12 @@ const AnimatedText = ({ onComplete }) => {
     if (lineInfo.charByChar && charsRef.current[index]) {
       const chars = charsRef.current[index];
       
-      // 각 글자마다 애니메이션 설정
+      // 각 글자마다 애니메이션 설정 - 더 빠르게
       gsap.to(chars, {
         opacity: 1,
         scale: 1,
-        duration: 0.1, // 더 빠르게
-        stagger: 0.03, // 글자별 지연 시간 감소
+        duration: 0.08, // 더 빠르게
+        stagger: 0.02, // 더 빠르게
         ease: "back.out(1.7)",
         onStart: () => {
           // 중간에 효과음 추가
@@ -141,13 +141,13 @@ const AnimatedText = ({ onComplete }) => {
         },
         onComplete: () => {
           // 개별 표시 시간 적용
-          const displayTime = lineInfo.displayTime || 600;
+          const displayTime = lineInfo.displayTime || 400;
           setTimeout(() => {
-            // 현재 라인 숨기기
+            // 현재 라인 숨기기 - 더 빠르게
             gsap.to(lineContainer, {
               opacity: 0,
               y: -50,
-              duration: 0.3, // 더 빠르게
+              duration: 0.2, // 더 빠르게
               ease: "power2.in",
               onComplete: () => {
                 // 다음 라인 애니메이션
@@ -158,7 +158,7 @@ const AnimatedText = ({ onComplete }) => {
         }
       });
     } else {
-      // 전체 텍스트가 한번에 나타나는 애니메이션
+      // 전체 텍스트가 한번에 나타나는 애니메이션 - 더 빠르게
       const textElement = lineContainer.querySelector('.text-line');
       
       gsap.fromTo(textElement, 
@@ -166,20 +166,20 @@ const AnimatedText = ({ onComplete }) => {
         { 
           scale: lineInfo.scale, 
           opacity: 1, 
-          duration: 0.5, // 더 빠르게
+          duration: 0.3, // 더 빠르게
           ease: "elastic.out(1, 0.5)",
           onStart: () => {
             playPop();
           },
           onComplete: () => {
             // 개별 표시 시간 적용
-            const displayTime = lineInfo.displayTime || 800;
+            const displayTime = lineInfo.displayTime || 400;
             setTimeout(() => {
-              // 현재 라인 숨기기
+              // 현재 라인 숨기기 - 더 빠르게
               gsap.to(lineContainer, {
                 opacity: 0,
                 y: -50,
-                duration: 0.3, // 더 빠르게
+                duration: 0.2, // 더 빠르게
                 ease: "power2.in",
                 onComplete: () => {
                   // 다음 라인 애니메이션

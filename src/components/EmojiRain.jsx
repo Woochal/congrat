@@ -2,182 +2,123 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import styled from 'styled-components';
 
-// 이모지 컨테이너
-const EmojiContainer = styled.div`
-  position: absolute;
+// 이모지 비 컨테이너
+const EmojiRainContainer = styled.div`
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  z-index: 50;
+  z-index: 150;
+  overflow: hidden;
 `;
 
-// 개별 이모지 스타일
-const EmojiStyle = {
-  position: 'absolute',
-  fontSize: '30px',
-  userSelect: 'none',
-  pointerEvents: 'none',
-  opacity: 0,
-  zIndex: 5
-};
+// 이모지 목록 - 텍스트로 표현된 이모지
+const emojis = ['🎉', '🎊', '✨', '💖', '🎈', '🎂', '🥂', '🍾', '🎇', '🎆', '🌟', '⭐', '💫', '🏆', '🥇', '🎯', '🚀', '💯', '🔥', '👑'];
 
-const EmojiRain = ({ duration = 6000, density = 30 }) => {
+const EmojiRain = ({ duration = 3500, density = 40, isFinalAnimation = false }) => {
   const containerRef = useRef(null);
-  const emojisRef = useRef([]);
   const animationsRef = useRef([]);
-  
-  // 이모지 목록
-  const emojis = ['🎉', '✨', '🥳', '🎊', '🎈', '🎯', '🎮', '🎪', '🎭', '💎', '🎁', '🏆', '🏅', '🔥', '💯', '⭐'];
   
   useEffect(() => {
     if (!containerRef.current) return;
     
     // 컨테이너 초기화
     containerRef.current.innerHTML = '';
-    emojisRef.current = [];
+    animationsRef.current = [];
+    
+    // 이모지 개수 (최종 애니메이션일 경우 밀도 증가)
+    const emojiCount = isFinalAnimation ? density * 1.5 : density;
     
     // 이모지 생성
-    for (let i = 0; i < density; i++) {
-      createEmoji();
+    for (let i = 0; i < emojiCount; i++) {
+      // 랜덤 이모지 선택
+      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+      
+      // 이모지 요소 생성
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji';
+      emoji.textContent = randomEmoji;
+      emoji.style.position = 'absolute';
+      emoji.style.fontSize = `${Math.random() * 20 + 20}px`; // 20px ~ 40px
+      emoji.style.opacity = '0';
+      emoji.style.zIndex = '150';
+      emoji.style.userSelect = 'none';
+      
+      // 중앙에서 폭죽처럼 퍼지는 애니메이션을 위한 초기 위치
+      emoji.style.left = '50%';
+      emoji.style.top = '50%';
+      emoji.style.transform = 'translate(-50%, -50%)';
+      
+      containerRef.current.appendChild(emoji);
+      
+      // 이모지가 멀리 날아가는 시간 계산
+      const flyDuration = Math.random() * 0.8 + 0.8; // 0.8s ~ 1.6s
+      
+      // 애니메이션 적용
+      const tl = gsap.timeline();
+      
+      // 퍼지는 애니메이션
+      tl.to(emoji, {
+        x: `${(Math.random() - 0.5) * window.innerWidth * (isFinalAnimation ? 2 : 1.5)}`, // 더 멀리 날아가도록 거리 증가
+        y: `${(Math.random() - 0.5) * window.innerHeight * (isFinalAnimation ? 2 : 1.5)}`, // 더 멀리 날아가도록 거리 증가
+        opacity: 1,
+        rotation: Math.random() * 360,
+        duration: flyDuration,
+        delay: Math.random() * 0.3, // 0s ~ 0.3s
+        ease: "power2.out"
+      });
+      
+      // 잠시 유지했다가 사라지는 애니메이션
+      tl.to(emoji, {
+        opacity: 0,
+        scale: isFinalAnimation ? 1.5 : 1.2,
+        duration: Math.random() * 0.5 + 0.7, // 0.7s ~ 1.2s
+        delay: Math.random() * 0.4 + 0.3, // 0.3s ~ 0.7s
+        ease: "power1.in"
+      }, ">");
+      
+      // 애니메이션 참조 저장
+      animationsRef.current.push(tl);
     }
     
-    // 일정 시간마다 새로운 이모지 추가
-    const interval = setInterval(() => {
-      if (emojisRef.current.length < 100) {
-        createEmoji();
-        createEmoji();
-      }
-    }, 500);
-    
-    // 타임아웃 설정
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-      
-      // 모든 애니메이션 종료
-      animationsRef.current.forEach(anim => {
-        if (anim && anim.kill) anim.kill();
-      });
-      
-      // 모든 이모지 제거
-      gsap.to(emojisRef.current, {
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.01,
-        onComplete: () => {
-          if (containerRef.current) {
-            containerRef.current.innerHTML = '';
+    // duration 시간 후에 강제로 모든 애니메이션 종료
+    const cleanupTimeout = setTimeout(() => {
+      if (containerRef.current) {
+        // 남아있는 이모지 모두 페이드아웃
+        const remainingEmojis = containerRef.current.querySelectorAll('.emoji');
+        gsap.to(remainingEmojis, {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.5,
+          stagger: 0.02,
+          ease: "power1.in",
+          onComplete: () => {
+            if (containerRef.current) {
+              containerRef.current.innerHTML = '';
+            }
           }
-          emojisRef.current = [];
-          animationsRef.current = [];
-        }
-      });
-    }, duration);
+        });
+      }
+    }, duration - 500); // 정리를 위해 500ms 일찍 시작
     
+    // 컴포넌트 언마운트 시 애니메이션 정리
     return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      clearTimeout(cleanupTimeout);
       
-      // 모든 애니메이션 정리
-      animationsRef.current.forEach(anim => {
-        if (anim && anim.kill) anim.kill();
+      // 모든 애니메이션 중지
+      animationsRef.current.forEach(tl => {
+        if (tl) tl.kill();
       });
-    };
-  }, [duration, density]);
-  
-  // 이모지 생성 함수
-  const createEmoji = () => {
-    if (!containerRef.current) return;
-    
-    // 랜덤 이모지 선택
-    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-    
-    // 이모지 엘리먼트 생성
-    const element = document.createElement('div');
-    Object.assign(element.style, EmojiStyle);
-    element.textContent = emoji;
-    
-    // 랜덤 시작 위치 설정
-    const startX = Math.random() * window.innerWidth;
-    const startY = -50; // 화면 위에서 시작
-    
-    // 랜덤 크기 설정
-    const scale = 0.5 + Math.random() * 2;
-    
-    // 스타일 설정
-    gsap.set(element, {
-      x: startX,
-      y: startY,
-      scale,
-      rotation: Math.random() * 360,
-      opacity: 0
-    });
-    
-    // 컨테이너에 추가
-    containerRef.current.appendChild(element);
-    emojisRef.current.push(element);
-    
-    // 애니메이션 생성
-    const duration = 3 + Math.random() * 4;
-    const tl = gsap.timeline();
-    
-    // 등장 애니메이션
-    tl.to(element, {
-      opacity: 1,
-      duration: 0.3
-    });
-    
-    // 낙하 애니메이션
-    tl.to(element, {
-      y: window.innerHeight + 100,
-      x: startX + (Math.random() - 0.5) * 200,
-      rotation: Math.random() * 360 * (Math.random() > 0.5 ? 1 : -1),
-      duration,
-      ease: "power1.in",
-      onComplete: () => {
-        if (containerRef.current && containerRef.current.contains(element)) {
-          containerRef.current.removeChild(element);
-          
-          // 배열에서 제거
-          const index = emojisRef.current.indexOf(element);
-          if (index > -1) {
-            emojisRef.current.splice(index, 1);
-          }
-          
-          // 애니메이션 배열에서 제거
-          const animIndex = animationsRef.current.indexOf(tl);
-          if (animIndex > -1) {
-            animationsRef.current.splice(animIndex, 1);
-          }
-        }
+      
+      if (containerRef.current) {
+        gsap.killTweensOf(containerRef.current.children);
       }
-    }, "-=0.3");
-    
-    // 좌우 흔들림 효과
-    tl.to(element, {
-      x: startX + (Math.random() - 0.5) * 100,
-      duration: duration * 0.3,
-      ease: "sine.inOut",
-      repeat: 3,
-      yoyo: true
-    }, "-=" + duration);
-    
-    // 회전 효과
-    tl.to(element, {
-      rotation: Math.random() * 360 * (Math.random() > 0.5 ? 1 : -1),
-      duration: duration * 0.5,
-      ease: "sine.inOut",
-      repeat: 1,
-      yoyo: true
-    }, "-=" + duration);
-    
-    // 애니메이션 저장
-    animationsRef.current.push(tl);
-  };
+    };
+  }, [density, isFinalAnimation, duration]);
   
-  return <EmojiContainer ref={containerRef} />;
+  return <EmojiRainContainer ref={containerRef} />;
 };
 
 export default EmojiRain; 

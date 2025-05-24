@@ -77,23 +77,34 @@ export const Form = styled.form`
 // 입력 필드
 export const Input = styled.input`
   width: 100%;
-  padding: 15px 20px;
-  border: 2px solid #e1e1e1;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 2px solid ${props => props.error ? '#FF3B30' : '#ddd'};
   border-radius: 10px;
-  font-size: 16px;
-  margin-bottom: 20px;
-  transition: border-color 0.3s ease;
+  font-size: 1.2rem;
   outline: none;
+  transition: border-color 0.3s;
   
   &:focus {
-    border-color: #646cff;
-    box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+    border-color: ${props => props.error ? '#FF3B30' : '#4a90e2'};
+    box-shadow: ${props => props.error ? '0 0 0 2px rgba(255, 59, 48, 0.2)' : 'none'};
   }
   
   @media (max-width: 480px) {
-    padding: 12px 15px;
-    font-size: 14px;
+    padding: 12px;
+    font-size: 1rem;
   }
+`;
+
+// 에러 메시지 스타일
+export const ErrorMessage = styled.div`
+  color: #FF3B30;
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  text-align: left;
+  width: 100%;
+  font-weight: 500;
 `;
 
 // 버튼
