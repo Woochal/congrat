@@ -145,7 +145,7 @@ function App() {
         <AppContainer ref={containerRef}>
           {showInput ? (
             <InputContainer>
-              <Title>이름을 입력하세요</Title>
+              <Title>느좋패밀리</Title>
               <Form onSubmit={handleSubmit}>
                 <Input
                   ref={inputRef}

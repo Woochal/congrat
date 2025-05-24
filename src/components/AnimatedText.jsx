@@ -77,7 +77,7 @@ const AnimatedText = ({ onComplete }) => {
     { text: "승.진.이라뇨?!?", charByChar: true, scale: 1, fontSize: 8, displayTime: 600 },
     { text: "이 정도면", charByChar: false, scale: 1.0, fontSize: 7, displayTime: 400 },
     { text: "드라마 주인공급", charByChar: true, scale: 1, fontSize: 8, displayTime: 500 },
-    { text: "인 생 전 개", charByChar: true, scale: 1, fontSize: 14, displayTime: 800 },
+    { text: "인 생 전 개", charByChar: true, scale: 1, fontSize: 13, displayTime: 800 },
     { text: "아닙니까~!!!🎬", charByChar: false, scale: 1, fontSize: 6, displayTime: 500 },
     { text: "일 잘해, 성격 좋아,\n외모까지 미쳤는데…", charByChar: true, scale: 1, fontSize: 6, displayTime: 850 },
     { text: "이제 승진까지!?", charByChar: false, scale: 1, fontSize: 9, displayTime: 600 },
@@ -89,8 +89,8 @@ const AnimatedText = ({ onComplete }) => {
     { text: "송팀장?", charByChar: true, scale: 1, fontSize: 10, displayTime: 500 },
     { text: "송실장?", charByChar: true, scale: 1, fontSize: 11, displayTime: 500 },
     { text: "아니면 그냥", charByChar: true, scale: 1, fontSize: 6, displayTime: 450 },
-    { text: " 송CEO!?", charByChar: true, scale: 1, fontSize: 14, displayTime: 850 },
-    { text: "모두 박수!!!!!!!", charByChar: true, scale: 1, fontSize: 9, displayTime: 650 },
+    { text: " 송CEO!?", charByChar: true, scale: 1, fontSize: 13, displayTime: 850 },
+    { text: "모두 박수!!!", charByChar: true, scale: 1, fontSize: 9, displayTime: 650 },
     { text: "승진 축하드려요!!!", charByChar: true, scale: 1, fontSize: 9, displayTime: 850 }
   ];
   
