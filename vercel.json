@@ -39,8 +39,5 @@
         }
       ]
     }
-  ],
-  "buildEnvironment": {
-    "SITE_URL": "${SITE_URL}"
-  }
+  ]
 } 
